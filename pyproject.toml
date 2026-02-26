@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "selflistload"
+version = "0.2.0"
+description = "Download/update wordlists and prepare Windows admin tools"
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [
+  { name = "Selflists" }
+]
+
+[project.urls]
+Homepage = "https://github.com/MelForze/Selflists"
+Repository = "https://github.com/MelForze/Selflists"
+
+[project.scripts]
+selflistload = "selflistload:main"
+
+[tool.setuptools]
+py-modules = ["selflistload"]
