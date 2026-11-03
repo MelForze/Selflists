@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "selflistload"
-version = "0.2.0"
-description = "Download/update wordlists and prepare Windows admin tools"
+version = "0.3.0"
+description = "Install curated wordlists and port sets, sync their sources, and prepare Windows admin tools"
 readme = "README.md"
 requires-python = ">=3.9"
 authors = [
@@ -21,3 +21,10 @@ selflistload = "selflistload:main"
 
 [tool.setuptools]
 py-modules = ["selflistload"]
+
+[tool.setuptools.data-files]
+"share/selflistload" = ["bundle.json"]
+"share/selflistload/dns" = ["dns/*.txt", "dns/*.gz"]
+"share/selflistload/web" = ["web/*.txt", "web/*.gz"]
+"share/selflistload/api" = ["api/*.txt", "api/*.gz"]
+"share/selflistload/ports" = ["ports/*.txt"]

@@ -1,0 +1,6 @@
+include bundle.json
+graft dns
+graft web
+graft api
+graft ports
+global-exclude __pycache__ *.py[cod]

@@ -1,0 +1,316 @@
+{
+  "files": [
+    {
+      "compression": "none",
+      "path": "api/endpoints.txt",
+      "sha256": "45380ebf77e88343ca508f9c46d5d02a3bda5f0fc2f9a0ccf55bec27506a3408",
+      "size": 21613,
+      "stored_path": "api/endpoints.txt",
+      "stored_sha256": "45380ebf77e88343ca508f9c46d5d02a3bda5f0fc2f9a0ccf55bec27506a3408"
+    },
+    {
+      "compression": "none",
+      "path": "api/openapi.txt",
+      "sha256": "5847156f1dcc0a74748dfe38082bdfc404ff7e96daa3697d1c201c2664439188",
+      "size": 98369,
+      "stored_path": "api/openapi.txt",
+      "stored_sha256": "5847156f1dcc0a74748dfe38082bdfc404ff7e96daa3697d1c201c2664439188"
+    },
+    {
+      "compression": "gzip",
+      "path": "dns/FUZZSUBS_CYFARE_1.txt",
+      "sha256": "b0a5be774ce03b5194a49ecc9f181ea3858823337e2728fa3e66ab823ca04563",
+      "size": 76747245,
+      "stored_path": "dns/FUZZSUBS_CYFARE_1.txt.gz",
+      "stored_sha256": "32dfea4e71514a3e3e5c1ec83b95b5a802f4ab215c05e5b64da9266879604ba1"
+    },
+    {
+      "compression": "gzip",
+      "path": "dns/FUZZSUBS_CYFARE_2.txt",
+      "sha256": "49f9a2b9b75493b2947ce979a81c3ce02c1ef81b8b1f941aa29f6e02360982e0",
+      "size": 76747202,
+      "stored_path": "dns/FUZZSUBS_CYFARE_2.txt.gz",
+      "stored_sha256": "1cb82d79211356c8749eccf39ad994f26f2ba084dc066beab88519622dbc5506"
+    },
+    {
+      "compression": "gzip",
+      "path": "dns/assetnote-httparchive-subdomains.txt",
+      "sha256": "485c1bb7281c43ce31ac67fa0031d564a87da6267540795fe842f67e4f9b5058",
+      "size": 48351834,
+      "stored_path": "dns/assetnote-httparchive-subdomains.txt.gz",
+      "stored_sha256": "85b82640dac496cf3fc607c476274a8f43fd3a9b9ea56d18aa8a33f7e08d4a7a"
+    },
+    {
+      "compression": "gzip",
+      "path": "dns/best-dns-wordlist.txt",
+      "sha256": "94e4996ea309da719baefb14d507ef466e7b91db49e8b0705a0be0fb7da1a10e",
+      "size": 140842282,
+      "stored_path": "dns/best-dns-wordlist.txt.gz",
+      "stored_sha256": "4890fc2f976b013bf9908c12bd2ab03284971b53007c5cc39776fe0e12a1ea1c"
+    },
+    {
+      "compression": "gzip",
+      "path": "dns/biggest_dnslist.txt",
+      "sha256": "f1b2bc5ae631e202977ce70a8c57708ad0ad339aa6715474375f8da40d50d29e",
+      "size": 338997298,
+      "stored_path": "dns/biggest_dnslist.txt.gz",
+      "stored_sha256": "6d6041cc910ecb196f9384210961f10fcf9a9133dfba095a2fa828a1aa709301"
+    },
+    {
+      "compression": "none",
+      "path": "dns/combined_subdomains.txt",
+      "sha256": "3a34daf0bfb081903da9a913c2921c86558630389fae5abe1166163d5229ffde",
+      "size": 8285473,
+      "stored_path": "dns/combined_subdomains.txt",
+      "stored_sha256": "3a34daf0bfb081903da9a913c2921c86558630389fae5abe1166163d5229ffde"
+    },
+    {
+      "compression": "gzip",
+      "path": "dns/n0kovo_subdomains.txt",
+      "sha256": "f3b78fccac56bdadd6ede6050a0d75f7385450029800b92d6b3e13c9a41ca2bc",
+      "size": 51558245,
+      "stored_path": "dns/n0kovo_subdomains.txt.gz",
+      "stored_sha256": "87efc5fe8740679678ffe67f0d564d1fabb9206061fca1cee8fb86a5f5b33f1b"
+    },
+    {
+      "compression": "none",
+      "path": "dns/namelist.txt",
+      "sha256": "e51bd258dfc74f8f519bc8c18a4494e331e7679a83ebca8f48c5cfaf68768ea0",
+      "size": 1585853,
+      "stored_path": "dns/namelist.txt",
+      "stored_sha256": "e51bd258dfc74f8f519bc8c18a4494e331e7679a83ebca8f48c5cfaf68768ea0"
+    },
+    {
+      "compression": "gzip",
+      "path": "dns/trickest-inventory-subdomains.txt",
+      "sha256": "9448663544856026104604fb21b4b7ed11fac14d0277ef2b92346ec3db043bdf",
+      "size": 15504032,
+      "stored_path": "dns/trickest-inventory-subdomains.txt.gz",
+      "stored_sha256": "64c0590507076e538bb067fc0412f280d5e4b4b1f2981db2dc10a6b168e60463"
+    },
+    {
+      "compression": "none",
+      "path": "ports/custom-top-2k.txt",
+      "sha256": "a5440a235bc73a9f1cee812c626ed207750d51f3abc9d9c7fe8ae5561342b3ff",
+      "size": 9999,
+      "stored_path": "ports/custom-top-2k.txt",
+      "stored_sha256": "a5440a235bc73a9f1cee812c626ed207750d51f3abc9d9c7fe8ae5561342b3ff"
+    },
+    {
+      "compression": "none",
+      "path": "ports/custom-top-web-1k.txt",
+      "sha256": "509bcb216a6591195676bc95336a7311dfe69eb00f5d47de7cb5fe9e88d6d8d0",
+      "size": 5033,
+      "stored_path": "ports/custom-top-web-1k.txt",
+      "stored_sha256": "509bcb216a6591195676bc95336a7311dfe69eb00f5d47de7cb5fe9e88d6d8d0"
+    },
+    {
+      "compression": "none",
+      "path": "ports/nmap-top-1k.txt",
+      "sha256": "22a41503b3e39d86441b144bdc997728bc50483a3264c13965c900040caac857",
+      "size": 4994,
+      "stored_path": "ports/nmap-top-1k.txt",
+      "stored_sha256": "22a41503b3e39d86441b144bdc997728bc50483a3264c13965c900040caac857"
+    },
+    {
+      "compression": "none",
+      "path": "ports/nmap-top-2k.txt",
+      "sha256": "7a943f479db9d0bf3e054583c1ee3869d17e26136a47f52acb6bf933f614a7af",
+      "size": 9987,
+      "stored_path": "ports/nmap-top-2k.txt",
+      "stored_sha256": "7a943f479db9d0bf3e054583c1ee3869d17e26136a47f52acb6bf933f614a7af"
+    },
+    {
+      "compression": "none",
+      "path": "ports/nmap-top-3k.txt",
+      "sha256": "f26c14f3aece4ef4ecd8cabfdda8851349253e40b54c56ecbc8a9f6d18d8f263",
+      "size": 15650,
+      "stored_path": "ports/nmap-top-3k.txt",
+      "stored_sha256": "f26c14f3aece4ef4ecd8cabfdda8851349253e40b54c56ecbc8a9f6d18d8f263"
+    },
+    {
+      "compression": "none",
+      "path": "ports/nmap-top-4k.txt",
+      "sha256": "0560bdee6d323bd692d355fd666fd9dbb80577be8aba38e5d8be7b09bae6093b",
+      "size": 20658,
+      "stored_path": "ports/nmap-top-4k.txt",
+      "stored_sha256": "0560bdee6d323bd692d355fd666fd9dbb80577be8aba38e5d8be7b09bae6093b"
+    },
+    {
+      "compression": "none",
+      "path": "ports/nmap-top-5k.txt",
+      "sha256": "5daeb53c60e62000e01f7cf6fed839fffd7b763954a337475ad523e60e42361a",
+      "size": 25325,
+      "stored_path": "ports/nmap-top-5k.txt",
+      "stored_sha256": "5daeb53c60e62000e01f7cf6fed839fffd7b763954a337475ad523e60e42361a"
+    },
+    {
+      "compression": "gzip",
+      "path": "web/assetnote-directories.txt",
+      "sha256": "98cd59c9853e5203e61169cc2df5c4c20f64bbb6868c012f13e777133fe9eff3",
+      "size": 20449590,
+      "stored_path": "web/assetnote-directories.txt.gz",
+      "stored_sha256": "b9fa64d4d589bb9c7c98d14d815e275bbd718e293a624fcf186607fbf1481a6f"
+    },
+    {
+      "compression": "gzip",
+      "path": "web/biggest_weblist.txt",
+      "sha256": "1b4db149940bc5afc56177d3606b70d007868ede5f43ffa73af4cd3ad360859b",
+      "size": 29596138,
+      "stored_path": "web/biggest_weblist.txt.gz",
+      "stored_sha256": "181885a86d5ee593998b906a1881c4759644dcd4a99f32bd80fed6ad80607394"
+    },
+    {
+      "compression": "none",
+      "path": "web/content_discovery_all.txt",
+      "sha256": "7988cefea6de0c74bfe84b3f6288c1bf89c20805dc14b10d106a42b97e56a494",
+      "size": 6082276,
+      "stored_path": "web/content_discovery_all.txt",
+      "stored_sha256": "7988cefea6de0c74bfe84b3f6288c1bf89c20805dc14b10d106a42b97e56a494"
+    },
+    {
+      "compression": "none",
+      "path": "web/dodgypass.txt",
+      "sha256": "68cb3f3f2a00d8b27be1b96b7a342d8b72887e9d2b44b10126cf601f5792f3c2",
+      "size": 925776,
+      "stored_path": "web/dodgypass.txt",
+      "stored_sha256": "68cb3f3f2a00d8b27be1b96b7a342d8b72887e9d2b44b10126cf601f5792f3c2"
+    },
+    {
+      "compression": "none",
+      "path": "web/fuzz.txt",
+      "sha256": "8c4b1861ac7b0cfc975e8d9a0eeeb715a0fe5c9b96127b397d02bcff3d0cd2b5",
+      "size": 79109,
+      "stored_path": "web/fuzz.txt",
+      "stored_sha256": "8c4b1861ac7b0cfc975e8d9a0eeeb715a0fe5c9b96127b397d02bcff3d0cd2b5"
+    },
+    {
+      "compression": "none",
+      "path": "web/headers.txt",
+      "sha256": "ac97efa3594b96d8580e596d1b32e381e7e96755ac77f8c9c1214eac8bf6943e",
+      "size": 16546,
+      "stored_path": "web/headers.txt",
+      "stored_sha256": "ac97efa3594b96d8580e596d1b32e381e7e96755ac77f8c9c1214eac8bf6943e"
+    },
+    {
+      "compression": "none",
+      "path": "web/hfuzz.txt",
+      "sha256": "3a02076927d15d827a26c3b65a5b6d89e3b0078d4ca94d9825583b404ff27b70",
+      "size": 2647034,
+      "stored_path": "web/hfuzz.txt",
+      "stored_sha256": "3a02076927d15d827a26c3b65a5b6d89e3b0078d4ca94d9825583b404ff27b70"
+    },
+    {
+      "compression": "none",
+      "path": "web/params.txt",
+      "sha256": "91f7e457415ffd0e4278d13887804036b62240a135a022a6fd6e831a7151899f",
+      "size": 54157,
+      "stored_path": "web/params.txt",
+      "stored_sha256": "91f7e457415ffd0e4278d13887804036b62240a135a022a6fd6e831a7151899f"
+    },
+    {
+      "compression": "none",
+      "path": "web/seclists-combined-directories.txt",
+      "sha256": "cc0008d103cdec0247c3b2dd467df2961f7b6537df997e139139e76686e09299",
+      "size": 1150363,
+      "stored_path": "web/seclists-combined-directories.txt",
+      "stored_sha256": "cc0008d103cdec0247c3b2dd467df2961f7b6537df997e139139e76686e09299"
+    }
+  ],
+  "sources": {
+    "api/endpoints.txt": {
+      "etag": "\"c7ef31f57abfcf0b6e3498c099fdbaa681aad618978cec8ce53ead4d60f738a2\"",
+      "sha256": "45380ebf77e88343ca508f9c46d5d02a3bda5f0fc2f9a0ccf55bec27506a3408",
+      "url": "https://gist.github.com/MelForze/7292bec4a39b0a376cd1acfcc8b6ab85/raw/api-endpoints.txt"
+    },
+    "api/openapi.txt": {
+      "etag": "\"96bda26fb33a1fd6de782b89398a32f9a184577877eaa4b416f6667aefd258ff\"",
+      "sha256": "5847156f1dcc0a74748dfe38082bdfc404ff7e96daa3697d1c201c2664439188",
+      "url": "https://github.com/z5jt/API-documentation-Wordlist/raw/refs/heads/main/API-Documentation-Wordlist/api-documentation-endpoint.txt"
+    },
+    "dns/FUZZSUBS_CYFARE_1.txt": {
+      "etag": "\"b01e45c4122128efa904e3f464cb1d7f8e3fc8d2a02bc1300aff7989a7472fa5\"",
+      "sha256": "b0a5be774ce03b5194a49ecc9f181ea3858823337e2728fa3e66ab823ca04563",
+      "url": "https://github.com/danielmiessler/SecLists/raw/refs/heads/master/Discovery/DNS/FUZZSUBS_CYFARE_1.txt"
+    },
+    "dns/FUZZSUBS_CYFARE_2.txt": {
+      "etag": "\"4e60d066d5a8ea18c15fe2a35e306b80e8918af87780caff236150c814e67ba5\"",
+      "sha256": "49f9a2b9b75493b2947ce979a81c3ce02c1ef81b8b1f941aa29f6e02360982e0",
+      "url": "https://github.com/danielmiessler/SecLists/raw/refs/heads/master/Discovery/DNS/FUZZSUBS_CYFARE_2.txt"
+    },
+    "dns/assetnote-httparchive-subdomains.txt": {
+      "etag": "\"69a19ddb-2e1ca5a\"",
+      "last_modified": "Fri, 27 Feb 2026 13:36:27 GMT",
+      "sha256": "485c1bb7281c43ce31ac67fa0031d564a87da6267540795fe842f67e4f9b5058",
+      "url": "https://wordlists-cdn.assetnote.io/data/automated/httparchive_subdomains_2026_02_27.txt"
+    },
+    "dns/best-dns-wordlist.txt": {
+      "etag": "\"644bc6ad-865152a\"",
+      "last_modified": "Fri, 28 Apr 2023 13:14:21 GMT",
+      "sha256": "94e4996ea309da719baefb14d507ef466e7b91db49e8b0705a0be0fb7da1a10e",
+      "url": "https://wordlists-cdn.assetnote.io/data/manual/best-dns-wordlist.txt"
+    },
+    "dns/combined_subdomains.txt": {
+      "etag": "\"600c34b36a7e4493c6aa3e5bec3bdb1b5a4781611eb639864b6e6bea5c2435a0\"",
+      "sha256": "3a34daf0bfb081903da9a913c2921c86558630389fae5abe1166163d5229ffde",
+      "url": "https://github.com/danielmiessler/SecLists/raw/refs/heads/master/Discovery/DNS/combined_subdomains.txt"
+    },
+    "dns/n0kovo_subdomains.txt": {
+      "etag": "\"0787a7e6f17766860e251a83154fe5b5bebc52078b870070ed202894a8303b40\"",
+      "sha256": "f3b78fccac56bdadd6ede6050a0d75f7385450029800b92d6b3e13c9a41ca2bc",
+      "url": "https://github.com/danielmiessler/SecLists/raw/refs/heads/master/Discovery/DNS/n0kovo_subdomains.txt"
+    },
+    "dns/namelist.txt": {
+      "etag": "\"f8d61681fc46382b8901c39a591b51145676adfd04942020c5c2ef12af5a8e73\"",
+      "sha256": "e51bd258dfc74f8f519bc8c18a4494e331e7679a83ebca8f48c5cfaf68768ea0",
+      "url": "https://github.com/danielmiessler/SecLists/raw/refs/heads/master/Discovery/DNS/namelist.txt"
+    },
+    "dns/trickest-inventory-subdomains.txt": {
+      "etag": "\"9f38509d7412444cfdb1622819f7e7d718699ab0cc5cac210209d4e41afe5710\"",
+      "sha256": "9448663544856026104604fb21b4b7ed11fac14d0277ef2b92346ec3db043bdf",
+      "url": "https://raw.githubusercontent.com/trickest/wordlists/main/inventory/subdomains.txt"
+    },
+    "web/assetnote-directories.txt": {
+      "etag": "\"69a199f9-1380936\"",
+      "last_modified": "Fri, 27 Feb 2026 13:19:53 GMT",
+      "sha256": "98cd59c9853e5203e61169cc2df5c4c20f64bbb6868c012f13e777133fe9eff3",
+      "url": "https://wordlists-cdn.assetnote.io/data/automated/httparchive_directories_1m_2026_02_27.txt"
+    },
+    "web/content_discovery_all.txt": {
+      "etag": "\"00df8c4cb13559fb790a4439360e29217fd4d089adf314ec879d2841afb17609\"",
+      "sha256": "7988cefea6de0c74bfe84b3f6288c1bf89c20805dc14b10d106a42b97e56a494",
+      "url": "https://gist.github.com/jhaddix/b80ea67d85c13206125806f0828f4d10/raw/content_discovery_all.txt"
+    },
+    "web/dodgypass.txt": {
+      "etag": "\"0263edbfcb2035b9521c7e47592d6183e0ee6c8ba68a282f08eb9bceef2f272b\"",
+      "sha256": "68cb3f3f2a00d8b27be1b96b7a342d8b72887e9d2b44b10126cf601f5792f3c2",
+      "url": "https://raw.githubusercontent.com/mohemiv/dodgypass/refs/heads/main/dodgypass.txt"
+    },
+    "web/fuzz.txt": {
+      "etag": "\"40a4f09279d2bbc66fe6afdd9bbf376d639423ee8d0f8058e40474e2ed568952\"",
+      "sha256": "8c4b1861ac7b0cfc975e8d9a0eeeb715a0fe5c9b96127b397d02bcff3d0cd2b5",
+      "url": "https://github.com/Bo0oM/fuzz.txt/raw/refs/heads/master/fuzz.txt"
+    },
+    "web/headers.txt": {
+      "etag": "\"719d2f6d94d3fb8764889d1cacc617e89cf3b270f77271a1f7d781eae31cae1d\"",
+      "sha256": "ac97efa3594b96d8580e596d1b32e381e7e96755ac77f8c9c1214eac8bf6943e",
+      "url": "https://raw.githubusercontent.com/danielmiessler/SecLists/master/Discovery/Web-Content/BurpSuite-ParamMiner/lowercase-headers"
+    },
+    "web/hfuzz.txt": {
+      "etag": "\"3dc93d366ea7f53fc2421df809c87f41b6698c1193b4f6aaf6317e5fa3300b3b\"",
+      "sha256": "3a02076927d15d827a26c3b65a5b6d89e3b0078d4ca94d9825583b404ff27b70",
+      "url": "https://github.com/thehlopster/hfuzz/raw/refs/heads/master/hfuzz.txt"
+    },
+    "web/params.txt": {
+      "etag": "\"6ef3b55591badcceacbee69d8dd580a39f8c06159e9bfc4823c7d6b9a34f7596\"",
+      "sha256": "91f7e457415ffd0e4278d13887804036b62240a135a022a6fd6e831a7151899f",
+      "url": "https://raw.githubusercontent.com/danielmiessler/SecLists/master/Discovery/Web-Content/burp-parameter-names.txt"
+    },
+    "web/seclists-combined-directories.txt": {
+      "etag": "\"9a97432b9ea9a2e955a374b00961658843bc2f8ae3b14153feac391da5baf42a\"",
+      "sha256": "cc0008d103cdec0247c3b2dd467df2961f7b6537df997e139139e76686e09299",
+      "url": "https://raw.githubusercontent.com/danielmiessler/SecLists/master/Discovery/Web-Content/combined_directories.txt"
+    }
+  },
+  "version": 1
+}
