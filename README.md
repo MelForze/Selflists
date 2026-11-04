@@ -104,8 +104,10 @@ Wordlists and main utilities after `selflistload download`:
     ├── psexec.exe
     ├── procdump.exe
     ├── nc.exe
-    ├── ssh.exe
-    └── pwsh.exe
+    ├── ssh/
+    │   └── ssh.exe
+    └── pwsh/
+        └── pwsh.exe
 ```
 
 `dns/biggest_dnslist.txt` combines all DNS wordlists with duplicates removed.
@@ -113,7 +115,8 @@ Wordlists and main utilities after `selflistload download`:
 
 `web/params.txt` contains HTTP parameter names; `web/headers.txt` contains header names.
 
-Dependencies for `ssh.exe` and `pwsh.exe` are installed alongside them.
+The complete OpenSSH and PowerShell bundles, including dependencies, are installed
+in `winbins/ssh/` and `winbins/pwsh/`, respectively.
 
 Each file in `ports/` contains TCP ports on a single comma-separated line.
 Nmap lists follow frequency order; custom lists are sorted numerically.

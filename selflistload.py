@@ -55,7 +55,6 @@ class DownloadTarget:
     name: str
     url: str
     is_dns_source: bool = False
-    legacy_name: str | None = None
     assetnote_prefix: str | None = None
     is_web_source: bool = False
 
@@ -64,13 +63,11 @@ TARGETS: tuple[DownloadTarget, ...] = (
     DownloadTarget(
         "web/fuzz.txt",
         "https://github.com/Bo0oM/fuzz.txt/raw/refs/heads/master/fuzz.txt",
-        legacy_name="fuzz.txt",
         is_web_source=True,
     ),
     DownloadTarget(
         "web/hfuzz.txt",
         "https://github.com/thehlopster/hfuzz/raw/refs/heads/master/hfuzz.txt",
-        legacy_name="hfuzz.txt",
         is_web_source=True,
     ),
     DownloadTarget(
@@ -98,31 +95,26 @@ TARGETS: tuple[DownloadTarget, ...] = (
     DownloadTarget(
         "web/content_discovery_all.txt",
         "https://gist.github.com/jhaddix/b80ea67d85c13206125806f0828f4d10/raw/content_discovery_all.txt",
-        legacy_name="content_discovery_all.txt",
         is_web_source=True,
     ),
     DownloadTarget(
         "api/endpoints.txt",
         "https://gist.github.com/MelForze/7292bec4a39b0a376cd1acfcc8b6ab85/raw/api-endpoints.txt",
-        legacy_name="api.txt",
     ),
     DownloadTarget(
         "api/openapi.txt",
         "https://github.com/z5jt/API-documentation-Wordlist/raw/refs/heads/main/"
         "API-Documentation-Wordlist/api-documentation-endpoint.txt",
-        legacy_name="openapi",
     ),
     DownloadTarget(
         "web/dodgypass.txt",
         "https://raw.githubusercontent.com/mohemiv/dodgypass/refs/heads/main/dodgypass.txt",
-        legacy_name="dodgypass.txt",
         is_web_source=True,
     ),
     DownloadTarget(
         "dns/best-dns-wordlist.txt",
         "https://wordlists-cdn.assetnote.io/data/manual/best-dns-wordlist.txt",
         is_dns_source=True,
-        legacy_name="best-dns-wordlist.txt",
     ),
     DownloadTarget(
         "dns/assetnote-httparchive-subdomains.txt",
@@ -140,35 +132,30 @@ TARGETS: tuple[DownloadTarget, ...] = (
         "https://github.com/danielmiessler/SecLists/raw/refs/heads/master/"
         "Discovery/DNS/FUZZSUBS_CYFARE_1.txt",
         is_dns_source=True,
-        legacy_name="FUZZSUBS_CYFARE_1.txt",
     ),
     DownloadTarget(
         "dns/FUZZSUBS_CYFARE_2.txt",
         "https://github.com/danielmiessler/SecLists/raw/refs/heads/master/"
         "Discovery/DNS/FUZZSUBS_CYFARE_2.txt",
         is_dns_source=True,
-        legacy_name="FUZZSUBS_CYFARE_2.txt",
     ),
     DownloadTarget(
         "dns/n0kovo_subdomains.txt",
         "https://github.com/danielmiessler/SecLists/raw/refs/heads/master/"
         "Discovery/DNS/n0kovo_subdomains.txt",
         is_dns_source=True,
-        legacy_name="n0kovo_subdomains",
     ),
     DownloadTarget(
         "dns/combined_subdomains.txt",
         "https://github.com/danielmiessler/SecLists/raw/refs/heads/master/"
         "Discovery/DNS/combined_subdomains.txt",
         is_dns_source=True,
-        legacy_name="combined_subdomains.txt",
     ),
     DownloadTarget(
         "dns/namelist.txt",
         "https://github.com/danielmiessler/SecLists/raw/refs/heads/master/"
         "Discovery/DNS/namelist.txt",
         is_dns_source=True,
-        legacy_name="namelist.txt",
     ),
 )
 
@@ -640,102 +627,10 @@ def run_refresh(repo_dir: Path, *, allow_shrink: bool = False) -> int:
     return changed
 
 
-def legacy_paths() -> dict[str, str]:
-    paths = {t.legacy_name: t.name for t in TARGETS if t.legacy_name}
-    paths["biggest_dnslist.txt"] = OUT_DNS_FILE
-    return paths
-
-
-def preserve_legacy_directory(path: Path, dest_dir: Path, category: str) -> None:
-    try:
-        path.rmdir()
-        return
-    except OSError:
-        pass
-    archive = dest_dir / f".legacy-{category}" / path.name
-    suffix = 1
-    while os.path.lexists(archive):
-        archive = archive.with_name(f"{path.name}-{suffix}")
-        suffix += 1
-    archive.parent.mkdir(parents=True, exist_ok=True)
-    path.rename(archive)
-    log(f"==> Preserved old directory: {path} -> {archive}")
-
-
-def migrate_dns_layout(dest_dir: Path, state: dict[str, Any]) -> None:
-    dns_dir = dest_dir / "dns"
-    dns_dir.mkdir(parents=True, exist_ok=True)
-    files = state.setdefault("files", {})
-    for name in DNS_TARGET_NAMES:
-        old_name = f"dns/sources/{Path(name).name}"
-        old_path, new_path = dest_dir / old_name, dest_dir / name
-        if old_path.is_file() and not os.path.lexists(new_path):
-            old_path.rename(new_path)
-            if old_name in files and name not in files:
-                files[name] = files.pop(old_name)
-    for child in dns_dir.iterdir():
-        if child.is_dir():
-            preserve_legacy_directory(child, dest_dir, "dns")
-
-
-def migrate_ports_layout(dest_dir: Path, state: dict[str, Any]) -> None:
-    ports_dir = dest_dir / "ports"
-    ports_dir.mkdir(parents=True, exist_ok=True)
-    paths = {name: PORT_CUSTOM_FILE for name in (
-        "ports/custom/tcp-top-2000.txt", "ports/custom-tcp-top-2000.txt", "ports/custom-tcp-top-2k.txt",
-    )}
-    for size in PORT_TOP_SIZES:
-        paths[f"ports/nmap-tcp-top-{size}.txt"] = nmap_port_file(size)
-        paths[f"ports/nmap-tcp-top-{size // 1000}k.txt"] = nmap_port_file(size)
-    files = state.setdefault("files", {})
-    for old_name, new_name in paths.items():
-        old_path, new_path = dest_dir / old_name, dest_dir / new_name
-        if old_path.is_file() and not os.path.lexists(new_path):
-            old_path.rename(new_path)
-            if old_name in files and new_name not in files:
-                files[new_name] = files.pop(old_name)
-    obsolete_names = ["ports/.sources/nmap-services", "ports/metadata.json",
-                      ".selflistload/nmap-services", ".selflistload/ports-metadata.json",
-                      "ports/custom/tcp-top-2000.csv"]
-    obsolete_names += [f"ports/profiles/{name}.txt" for name in ("web", "databases", "infrastructure")]
-    for name in obsolete_names:
-        obsolete = dest_dir / name
-        if obsolete.is_file():
-            obsolete.unlink()
-        files.pop(name, None)
-    service_dir = dest_dir / ".selflistload"
-    if service_dir.is_dir() and not any(service_dir.iterdir()):
-        service_dir.rmdir()
-    for path in ports_dir.iterdir():
-        match = re.fullmatch(r"nmap-(?:(tcp|udp)-)?top-(\d+)(k?)\.(?:txt|csv)", path.name)
-        size = int(match[2]) * (1000 if match[3] else 1) if match else 0
-        canonical = bool(match and size in PORT_TOP_SIZES and path.name == Path(nmap_port_file(size)).name)
-        if path.is_file() and (path.suffix == ".csv" or path.name.startswith("profile-") or
-                              path.name in {Path(name).name for name in paths} or (match and not canonical)):
-            path.unlink()
-        elif path.is_dir():
-            preserve_legacy_directory(path, dest_dir, "ports")
-
-
 def prepare_layout(dest_dir: Path, state: dict[str, Any]) -> None:
     for name in ("dns", "web", "api", "ports"):
         (dest_dir / name).mkdir(parents=True, exist_ok=True)
-    migrate_dns_layout(dest_dir, state)
-    migrate_ports_layout(dest_dir, state)
-
-    files = state.setdefault("files", {})
-    for old_name, new_name in legacy_paths().items():
-        old_path, new_path = dest_dir / old_name, dest_dir / new_name
-        if old_path.is_file() and not old_path.is_symlink() and not new_path.exists():
-            old_path.rename(new_path)
-            log(f"==> Moved: {old_name} -> {new_name}")
-            if old_name in files and new_name not in files:
-                files[new_name] = files.pop(old_name)
-        if old_path.is_symlink() and str(old_path.readlink()).startswith("dns/sources/") and new_path.is_file():
-            old_path.unlink()
-        # Also repairs links on a later run if a previous download was interrupted.
-        if new_path.is_file() and not os.path.lexists(old_path):
-            old_path.symlink_to(new_name)
+    state.setdefault("files", {})
 
 
 def write_port_list(path: Path, ports: list[int]) -> int:
@@ -1481,38 +1376,6 @@ def _download_zip_member_to_path(
     return changed
 
 
-def _bundle_output_path(rel: Path, bundle_name: str) -> Path:
-    # Keep each package's license and notices without colliding with other tools.
-    documents = {"license", "license.txt", "license.md", "notice", "notice.txt",
-                 "thirdpartynotices.txt", "readme", "readme.txt", "readme.md"}
-    if len(rel.parts) == 1 and rel.name.lower() in documents:
-        return rel.with_name(f"{bundle_name}-{rel.name}")
-    return rel
-
-
-def _clean_legacy_bundle(legacy_dir: Path, sources: dict[str, Path]) -> bool:
-    marker = legacy_dir / ".bundle_sha256"
-    if not legacy_dir.is_dir() or not marker.is_file():
-        return False
-    changed = False
-    for name, source in sources.items():
-        old_path = legacy_dir / name
-        if old_path.is_file() and sha256_file(old_path) == sha256_file(source):
-            old_path.unlink()
-            changed = True
-    for directory in sorted((p for p in legacy_dir.rglob("*") if p.is_dir()),
-                            key=lambda p: len(p.parts), reverse=True):
-        try:
-            directory.rmdir()
-        except OSError:
-            pass
-    if not any(path != marker for path in legacy_dir.iterdir()):
-        marker.unlink()
-        legacy_dir.rmdir()
-        changed = True
-    return changed
-
-
 def _sync_zip_bundle(
     *, label: str, zip_data: bytes | Path, bundle_dir: Path, bundle_name: str,
     required_rel_path: str,
@@ -1526,17 +1389,11 @@ def _sync_zip_bundle(
     previous_files = previous.get("files", {})
     archive_sha = sha256_bytes(zip_data) if isinstance(zip_data, bytes) else sha256_file(zip_data)
     if (previous.get("archive_sha256") == archive_sha and required_rel_path in previous_files
-            and not (bundle_dir / bundle_name).exists()
             and all(bundle_path(bundle_dir, name).is_file()
                     and sha256_file(bundle_path(bundle_dir, name)) == digest
                     for name, digest in previous_files.items())):
         log(f"    unchanged bundle: {label} -> {bundle_dir}")
         return False
-    other_files = {}
-    for name, record in bundles.items():
-        if name != bundle_name:
-            for path, digest in record.get("files", {}).items():
-                other_files[path.casefold()] = digest
 
     with tempfile.TemporaryDirectory(prefix=f"{bundle_name}.tmp.", dir=str(bundle_dir.parent)) as temporary:
         stage = Path(temporary) / "files"
@@ -1546,7 +1403,7 @@ def _sync_zip_bundle(
         hashes = {}
         folded = set()
         for name, source in sorted(sources.items()):
-            relative = _bundle_output_path(Path(name), bundle_name).as_posix()
+            relative = name
             if relative.casefold() in folded or relative.casefold() == META_FILE.casefold():
                 raise SelfListLoadError(f"Конфликт имён файлов в архиве {label}: {relative}")
             folded.add(relative.casefold())
@@ -1555,15 +1412,12 @@ def _sync_zip_bundle(
         if required_rel_path not in outputs:
             raise SelfListLoadError(f"В комплекте {label} не найден {required_rel_path}")
 
-        # Check every path before replacing anything in the shared directory.
+        # Check every path before replacing files in this bundle directory.
         for relative, digest in hashes.items():
             target = bundle_dir / relative
-            other_digest = other_files.get(relative.casefold())
-            if other_digest is not None and other_digest != digest:
-                raise SelfListLoadError(f"Файл {relative} конфликтует с другим Windows-комплектом")
             if target.exists() and not target.is_file():
                 raise SelfListLoadError(f"Путь занят каталогом: {target}")
-            if target.is_file() and relative not in previous_files and other_digest is None \
+            if target.is_file() and relative not in previous_files \
                     and sha256_file(target) != digest:
                 raise SelfListLoadError(f"Файл не принадлежит комплекту {bundle_name}: {target}")
             for parent in target.parents:
@@ -1576,7 +1430,7 @@ def _sync_zip_bundle(
         for relative, source in outputs.items():
             changed |= copy_file_if_changed(bundle_dir / relative, source, digest=hashes[relative])
         for relative, digest in previous_files.items():
-            if relative in hashes or relative.casefold() in other_files:
+            if relative in hashes:
                 continue
             obsolete = bundle_path(bundle_dir, relative)
             if obsolete.is_file() and sha256_file(obsolete) == digest:
@@ -1587,7 +1441,6 @@ def _sync_zip_bundle(
             bundles[bundle_name] = record
             save_state(bundle_dir, state)
             changed = True
-        changed |= _clean_legacy_bundle(bundle_dir / bundle_name, sources)
     log(f"    {'updated' if changed else 'unchanged'} bundle: {label} -> {bundle_dir}")
     return changed
 
@@ -1631,7 +1484,7 @@ def run_winbins_download() -> int:
     log(f"    source: {openssh_asset_name}")
     with downloaded_zip(openssh_url) as openssh_zip:
         if _sync_zip_bundle(
-            label="OpenSSH-Win64.zip", zip_data=openssh_zip, bundle_dir=winbins_dir,
+            label="OpenSSH-Win64.zip", zip_data=openssh_zip, bundle_dir=winbins_dir / "ssh",
             bundle_name="openssh", required_rel_path="ssh.exe",
         ):
             changed_count += 1
@@ -1645,7 +1498,7 @@ def run_winbins_download() -> int:
     log(f"    source: {pwsh_asset_name}")
     with downloaded_zip(pwsh_url) as pwsh_zip:
         if _sync_zip_bundle(
-            label=pwsh_asset_name, zip_data=pwsh_zip, bundle_dir=winbins_dir,
+            label=pwsh_asset_name, zip_data=pwsh_zip, bundle_dir=winbins_dir / "pwsh",
             bundle_name="powershell", required_rel_path="pwsh.exe",
         ):
             changed_count += 1
