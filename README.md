@@ -54,7 +54,7 @@ when recorded; locally modified files are marked. DNS analysis uses temporary di
 and reports exclusive entries absent from every other source, independent of merge order.
 
 `verify` checks saved checksums, wordlist content, and port counts, ranges, duplicates,
-format, custom sorting, and Nmap list prefixes. Repository checks also validate gzip
+format, custom sorting, and Nmap list prefixes. Repository checks also validate gzip/XZ
 integrity and compressed/uncompressed sizes and checksums. Files without saved checksums
 receive content checks only. Verification reports errors without modifying files.
 
@@ -76,6 +76,11 @@ Wordlists and main utilities after `selflistload download`:
 │   │   ├── best-dns-wordlist.txt
 │   │   ├── biggest_dnslist.txt
 │   │   ├── combined_subdomains.txt
+│   │   ├── custom-alnum-1.txt
+│   │   ├── custom-alnum-2.txt
+│   │   ├── custom-alnum-3.txt
+│   │   ├── custom-alnum-4.txt
+│   │   ├── custom-alnum-5.txt
 │   │   ├── n0kovo_subdomains.txt
 │   │   ├── namelist.txt
 │   │   └── trickest-inventory-subdomains.txt
@@ -111,6 +116,9 @@ Wordlists and main utilities after `selflistload download`:
 ```
 
 `dns/biggest_dnslist.txt` combines all DNS wordlists with duplicates removed.
+`dns/custom-alnum-1.txt` through `custom-alnum-5.txt` contain every combination
+of lowercase English letters and digits of the corresponding length: 62,193,780
+entries in total. These lists are generated locally and included in the combined DNS list.
 `web/biggest_weblist.txt` combines six path and directory wordlists with duplicates removed.
 
 `web/params.txt` contains HTTP parameter names; `web/headers.txt` contains header names.
@@ -123,5 +131,5 @@ Nmap lists follow frequency order; custom lists are sorted numerically.
 `custom-top-web-1k.txt` contains 1,000 priority ports for finding web services;
 `custom-top-2k.txt` contains 2,000 ports for general scanning.
 
-Large wordlists are stored as gzip files in the repository and unpacked during installation.
+Large wordlists are stored as gzip or XZ files in the repository and unpacked during installation.
 The local limit for each stored wordlist file is 300 MiB.

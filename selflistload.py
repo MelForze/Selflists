@@ -11,6 +11,7 @@ import http.client
 import io
 import itertools
 import json
+import lzma
 import math
 import os
 import re
@@ -32,7 +33,7 @@ WINBINS_DIR = Path.home() / "winbins"
 META_FILE = ".selflistload_state.json"
 OUT_DNS_FILE = "dns/biggest_dnslist.txt"
 OUT_WEB_FILE = "web/biggest_weblist.txt"
-USER_AGENT = "selflistload/0.3"
+USER_AGENT = "selflistload/0.4.0"
 HTTP_TIMEOUT = 30
 HTTP_RETRIES = 3
 RETRY_DELAY_SEC = 2
@@ -48,6 +49,9 @@ WORDLIST_CHUNK_LINES = 250_000
 WORDLIST_CHUNK_BYTES = 16 * 1024 * 1024
 WORDLIST_MERGE_FAN_IN = 64
 ASSETNOTE_CATALOG_URL = "https://raw.githubusercontent.com/assetnote/wordlists/master/data/automated.json"
+CUSTOM_DNS_LENGTHS = (1, 2, 3, 4, 5)
+CUSTOM_DNS_ALPHABET = b"0123456789abcdefghijklmnopqrstuvwxyz"
+CUSTOM_DNS_GENERATOR = "dns-alnum-v1"
 
 
 @dataclass(frozen=True)
@@ -162,6 +166,14 @@ TARGETS: tuple[DownloadTarget, ...] = (
 DNS_TARGET_NAMES = tuple(t.name for t in TARGETS if t.is_dns_source)
 WEB_TARGET_NAMES = tuple(t.name for t in TARGETS if t.is_web_source)
 
+
+def custom_dns_sources() -> dict[str, int]:
+    return {f"dns/custom-alnum-{length}.txt": length for length in CUSTOM_DNS_LENGTHS}
+
+
+def dns_source_names() -> tuple[str, ...]:
+    return (*DNS_TARGET_NAMES, *custom_dns_sources())
+
 NMAP_SERVICES_URL = "https://raw.githubusercontent.com/nmap/nmap/master/nmap-services"
 PORT_TOP_SIZES = tuple(range(1000, 5001, 1000))
 PORT_CUSTOM_FILE = "ports/custom-top-2k.txt"
@@ -210,6 +222,11 @@ def sha256_file(path: Path) -> str:
         for chunk in iter(lambda: fh.read(1024 * 1024), b""):
             h.update(chunk)
     return h.hexdigest()
+
+
+def open_wordlist(path: Path, mode: str = "rb", **kwargs: Any) -> Any:
+    opener = {".gz": gzip.open, ".xz": lzma.open}.get(path.suffix, open)
+    return opener(path, mode, **kwargs)
 
 
 def ensure_app_dir(dest_dir: Path | None = None) -> Path:
@@ -322,6 +339,7 @@ def install_snapshot(
     if manifest.get("version") != 1:
         raise SelfListLoadError("Неизвестная версия bundle.json")
     changed = 0
+    copied_custom_dns = False
     for entry in manifest["files"]:
         name = entry["path"]
         path = bundle_path(dest_dir, name)
@@ -334,7 +352,7 @@ def install_snapshot(
         path.parent.mkdir(parents=True, exist_ok=True)
         fd, temporary = tempfile.mkstemp(prefix=f"{path.name}.tmp.", dir=str(path.parent))
         try:
-            opener = gzip.open if entry["compression"] == "gzip" else open
+            opener = open_wordlist if entry["compression"] != "none" else open
             digest = hashlib.sha256()
             with os.fdopen(fd, "wb") as dst, opener(source, "rb") as src:
                 for chunk in iter(lambda: src.read(1024 * 1024), b""):
@@ -357,7 +375,14 @@ def install_snapshot(
             state["rebuild_dns" if name == OUT_DNS_FILE else "rebuild_web"] = True
         save_state(dest_dir, state)
         changed += 1
+        copied_custom_dns |= name in custom_dns_sources()
         log(f"    installed snapshot: {name}")
+    if copied_custom_dns:
+        aggregate = next((entry for entry in manifest["files"] if entry["path"] == OUT_DNS_FILE), None)
+        path = dest_dir / OUT_DNS_FILE
+        if aggregate is None or not path.is_file() or sha256_file(path) != aggregate["sha256"]:
+            state["rebuild_dns"] = True
+            save_state(dest_dir, state)
     return changed
 
 
@@ -366,7 +391,7 @@ def nmap_port_file(size: int) -> str:
 
 
 def snapshot_file_names(raw_dir: Path) -> list[str]:
-    names = [t.name for t in TARGETS] + [OUT_DNS_FILE, OUT_WEB_FILE]
+    names = [t.name for t in TARGETS] + list(custom_dns_sources()) + [OUT_DNS_FILE, OUT_WEB_FILE]
     names += [nmap_port_file(size) for size in PORT_TOP_SIZES]
     names += [PORT_CUSTOM_FILE, PORT_WEB_FILE]
     return sorted(set(names))
@@ -531,9 +556,10 @@ def write_snapshot(raw_dir: Path, repo_dir: Path, state: dict[str, Any]) -> int:
             source = raw_dir / name
             digest = sha256_file(source)
             compressed = source.stat().st_size >= BUNDLE_COMPRESSION_THRESHOLD
-            stored_name = name + ".gz" if compressed else name
+            compression = ("xz" if name == OUT_DNS_FILE or name in custom_dns_sources() else "gzip") if compressed else "none"
+            stored_name = name + {"none": "", "gzip": ".gz", "xz": ".xz"}[compression]
             entry = {"path": name, "stored_path": stored_name, "sha256": digest,
-                     "size": source.stat().st_size, "compression": "gzip" if compressed else "none"}
+                     "size": source.stat().st_size, "compression": compression}
             target = snapshot_target(repo_dir, stored_name)
             staged = bundle_path(stage, stored_name)
             staged.parent.mkdir(parents=True, exist_ok=True)
@@ -544,7 +570,10 @@ def write_snapshot(raw_dir: Path, repo_dir: Path, state: dict[str, Any]) -> int:
                 backup_snapshot_file(target, staged)
             else:
                 with source.open("rb") as src, staged.open("wb") as dst:
-                    if compressed:
+                    if compression == "xz":
+                        with lzma.LZMAFile(dst, mode="wb", format=lzma.FORMAT_XZ, preset=6) as packed:
+                            shutil.copyfileobj(src, packed)
+                    elif compression == "gzip":
                         with gzip.GzipFile(filename="", fileobj=dst, mode="wb", mtime=0) as packed:
                             shutil.copyfileobj(src, packed)
                     else:
@@ -557,7 +586,7 @@ def write_snapshot(raw_dir: Path, repo_dir: Path, state: dict[str, Any]) -> int:
             source_state = state.get("files", {}).get(name)
             if isinstance(source_state, dict):
                 sources[name] = {key: value for key, value in source_state.items()
-                                 if key == "url" or (key in {"etag", "last_modified"}
+                                 if key == "url" or (key in {"etag", "last_modified", "generator", "length"}
                                                       and source_state.get("sha256") == digest)}
                 sources[name]["sha256"] = digest
         manifest = {"version": 1, "files": entries, "sources": sources}
@@ -631,6 +660,51 @@ def prepare_layout(dest_dir: Path, state: dict[str, Any]) -> None:
     for name in ("dns", "web", "api", "ports"):
         (dest_dir / name).mkdir(parents=True, exist_ok=True)
     state.setdefault("files", {})
+
+
+def custom_dns_blocks(length: int) -> Iterator[bytes]:
+    if length not in range(1, 6):
+        raise SelfListLoadError("Custom DNS length must be between 1 and 5")
+    words = itertools.product(CUSTOM_DNS_ALPHABET, repeat=length)
+    while True:
+        batch = tuple(itertools.islice(words, 50_000))
+        if not batch:
+            return
+        yield b"".join(bytes(word) + b"\n" for word in batch)
+
+
+def sync_custom_dns_lists(dest_dir: Path, state: dict[str, Any]) -> int:
+    changed = 0
+    files = state.setdefault("files", {})
+    for name, length in custom_dns_sources().items():
+        path = dest_dir / name
+        previous = files.get(name, {})
+        old_sha = sha256_file(path) if path.is_file() else None
+        if (isinstance(previous, dict) and previous.get("generator") == CUSTOM_DNS_GENERATOR
+                and previous.get("length") == length and old_sha is not None
+                and previous.get("sha256") == old_sha):
+            continue
+        path.parent.mkdir(parents=True, exist_ok=True)
+        fd, temporary = tempfile.mkstemp(prefix=f"{path.name}.tmp.", dir=str(path.parent))
+        try:
+            digest = hashlib.sha256()
+            with os.fdopen(fd, "wb") as stream:
+                for block in custom_dns_blocks(length):
+                    stream.write(block)
+                    digest.update(block)
+            new_sha = digest.hexdigest()
+            state["rebuild_dns"] = True
+            save_state(dest_dir, state)
+            if new_sha != old_sha:
+                os.replace(temporary, path)
+                changed += 1
+            files[name] = {"generator": CUSTOM_DNS_GENERATOR, "length": length, "sha256": new_sha}
+            save_state(dest_dir, state)
+            log(f"==> Generated {name}: {format_count(len(CUSTOM_DNS_ALPHABET) ** length)} entries")
+        finally:
+            if os.path.exists(temporary):
+                os.unlink(temporary)
+    return changed
 
 
 def write_port_list(path: Path, ports: list[int]) -> int:
@@ -937,7 +1011,7 @@ def _has_wordlist_entries(path: Path, *, compressed: bool = False) -> bool:
     # Inspect lines in bounded chunks, including very long comments/blank runs.
     in_comment = False
     first = True
-    opener = gzip.open if compressed else open
+    opener = open_wordlist if compressed else open
     with opener(path, "rb") as stream:
         for chunk in iter(lambda: stream.read(HTTP_CHUNK_BYTES), b""):
             if first:
@@ -962,7 +1036,7 @@ def validate_wordlist(
 ) -> None:
     if path.stat().st_size == 0:
         raise SelfListLoadError(f"Источник вернул пустой словарь: {target.name}")
-    opener = gzip.open if compressed else open
+    opener = open_wordlist if compressed else open
     with opener(path, "rb") as stream:
         prefix = stream.read(64 * 1024)
     if not prefix:
@@ -1332,7 +1406,7 @@ def rebuild_wordlist(
 
 
 def rebuild_dns_wordlist(dest_dir: Path) -> int:
-    return rebuild_wordlist(dest_dir, DNS_TARGET_NAMES, OUT_DNS_FILE, normalize_dns_line).unique_lines
+    return rebuild_wordlist(dest_dir, dns_source_names(), OUT_DNS_FILE, normalize_dns_line).unique_lines
 
 
 def rebuild_web_wordlist(dest_dir: Path) -> int:
@@ -1554,7 +1628,7 @@ def print_table(headers: tuple[str, ...], rows: list[tuple[str, ...]]) -> None:
 def digest_wordlist(path: Path, *, compressed: bool = False) -> tuple[str, int]:
     digest = hashlib.sha256()
     size = 0
-    opener = gzip.open if compressed else open
+    opener = open_wordlist if compressed else open
     with opener(path, "rb") as stream:
         for chunk in iter(lambda: stream.read(HTTP_CHUNK_BYTES), b""):
             digest.update(chunk)
@@ -1563,7 +1637,7 @@ def digest_wordlist(path: Path, *, compressed: bool = False) -> tuple[str, int]:
 
 
 def verify_port_file(path: Path, count: int, *, ascending: bool = False, compressed: bool = False) -> list[int]:
-    opener = gzip.open if compressed else open
+    opener = open_wordlist if compressed else open
     with opener(path, "rt", encoding="utf-8", newline="") as stream:
         text = stream.read(count * 6 + 1)
     if len(text) > count * 6:
@@ -1584,7 +1658,7 @@ def verify_port_file(path: Path, count: int, *, ascending: bool = False, compres
 
 def verify_aggregate(path: Path, name: str, *, compressed: bool = False) -> None:
     normalize = normalize_dns_line if name == OUT_DNS_FILE else normalize_web_line
-    opener = gzip.open if compressed else open
+    opener = open_wordlist if compressed else open
     previous = None
     with opener(path, "rb") as stream:
         for number, raw in enumerate(stream, 1):
@@ -1600,12 +1674,30 @@ def verify_aggregate(path: Path, name: str, *, compressed: bool = False) -> None
         raise SelfListLoadError("empty aggregate")
 
 
+def verify_custom_dns(path: Path, length: int, *, compressed: bool = False) -> None:
+    opener = open_wordlist if compressed else open
+    pattern = re.compile(br"[0-9a-z]{" + str(length).encode("ascii") + br"}\n")
+    count = 0
+    previous = None
+    with opener(path, "rb") as stream:
+        for count, raw in enumerate(stream, 1):
+            if not pattern.fullmatch(raw) or (previous is not None and raw <= previous):
+                raise SelfListLoadError(f"invalid or unsorted custom DNS entry at line {count}")
+            previous = raw
+    expected = len(CUSTOM_DNS_ALPHABET) ** length
+    if count != expected:
+        raise SelfListLoadError(f"expected {expected} custom DNS entries, found {count}")
+
+
 def verify_list_content(path: Path, name: str, *, compressed: bool = False) -> list[int] | None:
     port_sizes = {nmap_port_file(size): size for size in PORT_TOP_SIZES}
     port_sizes.update({PORT_CUSTOM_FILE: 2000, PORT_WEB_FILE: 1000})
     if name in port_sizes:
         return verify_port_file(path, port_sizes[name], ascending=name in (PORT_CUSTOM_FILE, PORT_WEB_FILE),
                                 compressed=compressed)
+    if name in custom_dns_sources():
+        verify_custom_dns(path, custom_dns_sources()[name], compressed=compressed)
+        return None
     target = next((target for target in TARGETS if target.name == name), DownloadTarget(name, ""))
     validate_wordlist(path, target, {}, compressed=compressed)
     if name in (OUT_DNS_FILE, OUT_WEB_FILE):
@@ -1643,11 +1735,11 @@ def verify_repository(repo_dir: Path, *, quiet: bool = False) -> list[str]:
             if name in seen:
                 raise SelfListLoadError("duplicate manifest entry")
             seen.add(name)
-            compressed = entry.get("compression") == "gzip"
-            if entry.get("compression") not in ("gzip", "none"):
+            compressed = entry.get("compression") in ("gzip", "xz")
+            if entry.get("compression") not in ("gzip", "xz", "none"):
                 raise SelfListLoadError("unsupported compression")
             stored_name = entry.get("stored_path")
-            if stored_name != name + (".gz" if compressed else "") or stored_name in stored_seen:
+            if stored_name != name + {"gzip": ".gz", "xz": ".xz", "none": ""}[entry["compression"]] or stored_name in stored_seen:
                 raise SelfListLoadError("invalid or duplicate stored path")
             stored_seen.add(stored_name)
             path = snapshot_target(repo_dir, stored_name)
@@ -1671,7 +1763,7 @@ def verify_repository(repo_dir: Path, *, quiet: bool = False) -> list[str]:
                 ports[name] = values
             if not quiet:
                 log(f"    checked: {name}")
-        except (SelfListLoadError, OSError, EOFError, UnicodeError, ValueError, zlib.error) as exc:
+        except (SelfListLoadError, OSError, EOFError, UnicodeError, ValueError, zlib.error, lzma.LZMAError) as exc:
             errors.append(f"{name or BUNDLE_FILE}: {exc}")
     errors.extend(f"{name}: missing manifest entry" for name in sorted(expected - seen))
     errors.extend(verify_nmap_prefixes(ports))
@@ -1711,7 +1803,7 @@ def run_verify(root: Path, *, repository: bool = False) -> int:
                 if values is not None:
                     ports[name] = values
                 log(f"    checked: {name}")
-            except (SelfListLoadError, OSError, EOFError, UnicodeError, ValueError, zlib.error) as exc:
+            except (SelfListLoadError, OSError, EOFError, UnicodeError, ValueError, zlib.error, lzma.LZMAError) as exc:
                 errors.append(f"{name}: {exc}")
         errors.extend(verify_nmap_prefixes(ports))
         if unchecked:
@@ -1727,7 +1819,7 @@ def run_status(dest_dir: Path) -> None:
         raise SelfListLoadError(f"Wordlist directory does not exist: {dest_dir}")
     state = load_state(dest_dir)
     rows = []
-    generated = {OUT_DNS_FILE, OUT_WEB_FILE}
+    generated = {OUT_DNS_FILE, OUT_WEB_FILE, *custom_dns_sources()}
     for name in snapshot_file_names(dest_dir):
         path = dest_dir / name
         if not path.is_file():
@@ -1759,15 +1851,16 @@ class DNSContribution:
 
 
 def dns_contributions(dest_dir: Path) -> tuple[int, list[DNSContribution]]:
-    missing = [name for name in DNS_TARGET_NAMES if not (dest_dir / name).is_file()]
+    names = dns_source_names()
+    missing = [name for name in names if not (dest_dir / name).is_file()]
     if missing:
         raise SelfListLoadError(f"Missing DNS sources: {', '.join(missing)}")
     sorted_sources = []
     counts = []
-    exclusive = [0] * len(DNS_TARGET_NAMES)
+    exclusive = [0] * len(names)
     total = 0
     with tempfile.TemporaryDirectory(prefix="selflistload-dns-stats-") as temporary:
-        for index, name in enumerate(DNS_TARGET_NAMES):
+        for index, name in enumerate(names):
             log(f"==> Analyze: {name}")
             work = Path(temporary) / str(index)
             work.mkdir()
@@ -1786,7 +1879,7 @@ def dns_contributions(dest_dir: Path) -> tuple[int, list[DNSContribution]]:
                 if owners & (owners - 1) == 0:
                     exclusive[owners.bit_length() - 1] += 1
     return total, [DNSContribution(name, count, only)
-                   for name, count, only in zip(DNS_TARGET_NAMES, counts, exclusive)]
+                   for name, count, only in zip(names, counts, exclusive)]
 
 
 def run_dns_stats(dest_dir: Path) -> None:
@@ -1813,7 +1906,7 @@ def sync_wordlists(
         state["sync"] = progress
     completed = progress["completed"]
     save_state(dest_dir, state)
-    changed_count = 0
+    changed_count = sync_custom_dns_lists(dest_dir, state)
     accepted_outputs = set()
     for target in targets:
         checked = completed.get(target.name)
@@ -1838,7 +1931,7 @@ def sync_wordlists(
             log(f"    unchanged: {target.name}")
 
     for name, sources, normalize, touched in (
-        (OUT_DNS_FILE, DNS_TARGET_NAMES, normalize_dns_line, dns_sources_touched),
+        (OUT_DNS_FILE, dns_source_names(), normalize_dns_line, dns_sources_touched),
         (OUT_WEB_FILE, WEB_TARGET_NAMES, normalize_web_line, web_sources_touched),
     ):
         flag = "rebuild_dns" if name == OUT_DNS_FILE else "rebuild_web"

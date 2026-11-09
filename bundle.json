@@ -49,12 +49,12 @@
       "stored_sha256": "4890fc2f976b013bf9908c12bd2ab03284971b53007c5cc39776fe0e12a1ea1c"
     },
     {
-      "compression": "gzip",
+      "compression": "xz",
       "path": "dns/biggest_dnslist.txt",
-      "sha256": "f1b2bc5ae631e202977ce70a8c57708ad0ad339aa6715474375f8da40d50d29e",
-      "size": 338997298,
-      "stored_path": "dns/biggest_dnslist.txt.gz",
-      "stored_sha256": "6d6041cc910ecb196f9384210961f10fcf9a9133dfba095a2fa828a1aa709301"
+      "sha256": "3a694a685a09917ecfd64564db03c2abfef83cc20eb2f39c136738b6fb5c4d2e",
+      "size": 705790976,
+      "stored_path": "dns/biggest_dnslist.txt.xz",
+      "stored_sha256": "8233c1bd75b97537f3729c028fdb1725da2246563783e1923fee3f5ebc4706f0"
     },
     {
       "compression": "none",
@@ -63,6 +63,46 @@
       "size": 8285473,
       "stored_path": "dns/combined_subdomains.txt",
       "stored_sha256": "3a34daf0bfb081903da9a913c2921c86558630389fae5abe1166163d5229ffde"
+    },
+    {
+      "compression": "none",
+      "path": "dns/custom-alnum-1.txt",
+      "sha256": "71e9aa833ec424844f3670bb5f1a2851867b9ce963f78df531e45d3a4c77dd72",
+      "size": 72,
+      "stored_path": "dns/custom-alnum-1.txt",
+      "stored_sha256": "71e9aa833ec424844f3670bb5f1a2851867b9ce963f78df531e45d3a4c77dd72"
+    },
+    {
+      "compression": "none",
+      "path": "dns/custom-alnum-2.txt",
+      "sha256": "5d9085ec8448f206507782b4c8463f6b944d7190059e59f54d8c88a68d2bc7e4",
+      "size": 3888,
+      "stored_path": "dns/custom-alnum-2.txt",
+      "stored_sha256": "5d9085ec8448f206507782b4c8463f6b944d7190059e59f54d8c88a68d2bc7e4"
+    },
+    {
+      "compression": "none",
+      "path": "dns/custom-alnum-3.txt",
+      "sha256": "9c34b30932dec1551fdda0c423532ee0130cb986f486e520ffb4561f5505fca0",
+      "size": 186624,
+      "stored_path": "dns/custom-alnum-3.txt",
+      "stored_sha256": "9c34b30932dec1551fdda0c423532ee0130cb986f486e520ffb4561f5505fca0"
+    },
+    {
+      "compression": "xz",
+      "path": "dns/custom-alnum-4.txt",
+      "sha256": "9c9cacb56ac3614f3df2aa47acd59b2e9b355e3aa4d3fd50f075d5a3b401bdbd",
+      "size": 8398080,
+      "stored_path": "dns/custom-alnum-4.txt.xz",
+      "stored_sha256": "c30b6fbe1f69a6381c21734120b81d6b151418f15b8473c23a5b6f04b2434b81"
+    },
+    {
+      "compression": "xz",
+      "path": "dns/custom-alnum-5.txt",
+      "sha256": "b6170c6949ab2c8f1eb1e88f5af2b419d2c7a42e872d446be13dd7162b1512d0",
+      "size": 362797056,
+      "stored_path": "dns/custom-alnum-5.txt.xz",
+      "stored_sha256": "dfeea180ba2a147ce3063577830cb30840bd701e3ba6e116d8786ffbbc0b0e22"
     },
     {
       "compression": "gzip",
@@ -250,10 +290,38 @@
       "sha256": "94e4996ea309da719baefb14d507ef466e7b91db49e8b0705a0be0fb7da1a10e",
       "url": "https://wordlists-cdn.assetnote.io/data/manual/best-dns-wordlist.txt"
     },
+    "dns/biggest_dnslist.txt": {
+      "sha256": "3a694a685a09917ecfd64564db03c2abfef83cc20eb2f39c136738b6fb5c4d2e"
+    },
     "dns/combined_subdomains.txt": {
       "etag": "\"600c34b36a7e4493c6aa3e5bec3bdb1b5a4781611eb639864b6e6bea5c2435a0\"",
       "sha256": "3a34daf0bfb081903da9a913c2921c86558630389fae5abe1166163d5229ffde",
       "url": "https://github.com/danielmiessler/SecLists/raw/refs/heads/master/Discovery/DNS/combined_subdomains.txt"
+    },
+    "dns/custom-alnum-1.txt": {
+      "generator": "dns-alnum-v1",
+      "length": 1,
+      "sha256": "71e9aa833ec424844f3670bb5f1a2851867b9ce963f78df531e45d3a4c77dd72"
+    },
+    "dns/custom-alnum-2.txt": {
+      "generator": "dns-alnum-v1",
+      "length": 2,
+      "sha256": "5d9085ec8448f206507782b4c8463f6b944d7190059e59f54d8c88a68d2bc7e4"
+    },
+    "dns/custom-alnum-3.txt": {
+      "generator": "dns-alnum-v1",
+      "length": 3,
+      "sha256": "9c34b30932dec1551fdda0c423532ee0130cb986f486e520ffb4561f5505fca0"
+    },
+    "dns/custom-alnum-4.txt": {
+      "generator": "dns-alnum-v1",
+      "length": 4,
+      "sha256": "9c9cacb56ac3614f3df2aa47acd59b2e9b355e3aa4d3fd50f075d5a3b401bdbd"
+    },
+    "dns/custom-alnum-5.txt": {
+      "generator": "dns-alnum-v1",
+      "length": 5,
+      "sha256": "b6170c6949ab2c8f1eb1e88f5af2b419d2c7a42e872d446be13dd7162b1512d0"
     },
     "dns/n0kovo_subdomains.txt": {
       "etag": "\"0787a7e6f17766860e251a83154fe5b5bebc52078b870070ed202894a8303b40\"",
@@ -270,11 +338,35 @@
       "sha256": "9448663544856026104604fb21b4b7ed11fac14d0277ef2b92346ec3db043bdf",
       "url": "https://raw.githubusercontent.com/trickest/wordlists/main/inventory/subdomains.txt"
     },
+    "ports/custom-top-2k.txt": {
+      "sha256": "a5440a235bc73a9f1cee812c626ed207750d51f3abc9d9c7fe8ae5561342b3ff"
+    },
+    "ports/custom-top-web-1k.txt": {
+      "sha256": "509bcb216a6591195676bc95336a7311dfe69eb00f5d47de7cb5fe9e88d6d8d0"
+    },
+    "ports/nmap-top-1k.txt": {
+      "sha256": "22a41503b3e39d86441b144bdc997728bc50483a3264c13965c900040caac857"
+    },
+    "ports/nmap-top-2k.txt": {
+      "sha256": "7a943f479db9d0bf3e054583c1ee3869d17e26136a47f52acb6bf933f614a7af"
+    },
+    "ports/nmap-top-3k.txt": {
+      "sha256": "f26c14f3aece4ef4ecd8cabfdda8851349253e40b54c56ecbc8a9f6d18d8f263"
+    },
+    "ports/nmap-top-4k.txt": {
+      "sha256": "0560bdee6d323bd692d355fd666fd9dbb80577be8aba38e5d8be7b09bae6093b"
+    },
+    "ports/nmap-top-5k.txt": {
+      "sha256": "5daeb53c60e62000e01f7cf6fed839fffd7b763954a337475ad523e60e42361a"
+    },
     "web/assetnote-directories.txt": {
       "etag": "\"69a199f9-1380936\"",
       "last_modified": "Fri, 27 Feb 2026 13:19:53 GMT",
       "sha256": "98cd59c9853e5203e61169cc2df5c4c20f64bbb6868c012f13e777133fe9eff3",
       "url": "https://wordlists-cdn.assetnote.io/data/automated/httparchive_directories_1m_2026_02_27.txt"
+    },
+    "web/biggest_weblist.txt": {
+      "sha256": "1b4db149940bc5afc56177d3606b70d007868ede5f43ffa73af4cd3ad360859b"
     },
     "web/content_discovery_all.txt": {
       "etag": "\"00df8c4cb13559fb790a4439360e29217fd4d089adf314ec879d2841afb17609\"",
