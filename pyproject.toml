@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "selflistload"
-version = "0.4.0"
+version = "0.4.1"
 description = "Install curated wordlists and port sets, sync their sources, and prepare Windows admin tools"
 readme = "README.md"
 requires-python = ">=3.9"

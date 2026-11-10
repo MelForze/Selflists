@@ -121,6 +121,22 @@
       "stored_sha256": "e51bd258dfc74f8f519bc8c18a4494e331e7679a83ebca8f48c5cfaf68768ea0"
     },
     {
+      "compression": "none",
+      "path": "dns/resolvers-trusted.txt",
+      "sha256": "a9a875e04f3756ad4620b2e79dbb843955ea05838b99ac3356630b6f49616d1a",
+      "size": 370,
+      "stored_path": "dns/resolvers-trusted.txt",
+      "stored_sha256": "a9a875e04f3756ad4620b2e79dbb843955ea05838b99ac3356630b6f49616d1a"
+    },
+    {
+      "compression": "none",
+      "path": "dns/resolvers.txt",
+      "sha256": "03afdb37cd2f75c30c52638e379036df8b01282f21e60c14afde7eaaee3c778e",
+      "size": 169315,
+      "stored_path": "dns/resolvers.txt",
+      "stored_sha256": "03afdb37cd2f75c30c52638e379036df8b01282f21e60c14afde7eaaee3c778e"
+    },
+    {
       "compression": "gzip",
       "path": "dns/trickest-inventory-subdomains.txt",
       "sha256": "9448663544856026104604fb21b4b7ed11fac14d0277ef2b92346ec3db043bdf",
@@ -332,6 +348,16 @@
       "etag": "\"f8d61681fc46382b8901c39a591b51145676adfd04942020c5c2ef12af5a8e73\"",
       "sha256": "e51bd258dfc74f8f519bc8c18a4494e331e7679a83ebca8f48c5cfaf68768ea0",
       "url": "https://github.com/danielmiessler/SecLists/raw/refs/heads/master/Discovery/DNS/namelist.txt"
+    },
+    "dns/resolvers-trusted.txt": {
+      "etag": "\"4ddedd847067dce98cd801bf35d2f0b2a62f2b83a21d17b578f0c4350722edfd\"",
+      "sha256": "a9a875e04f3756ad4620b2e79dbb843955ea05838b99ac3356630b6f49616d1a",
+      "url": "https://raw.githubusercontent.com/trickest/resolvers/main/resolvers-trusted.txt"
+    },
+    "dns/resolvers.txt": {
+      "etag": "\"bf7557541f150fbcd634479560e182ab7abea8784e6b96778c4288d4c5bbe50e\"",
+      "sha256": "03afdb37cd2f75c30c52638e379036df8b01282f21e60c14afde7eaaee3c778e",
+      "url": "https://raw.githubusercontent.com/trickest/resolvers/main/resolvers.txt"
     },
     "dns/trickest-inventory-subdomains.txt": {
       "etag": "\"9f38509d7412444cfdb1622819f7e7d718699ab0cc5cac210209d4e41afe5710\"",

@@ -9,6 +9,7 @@ import hashlib
 import heapq
 import http.client
 import io
+import ipaddress
 import itertools
 import json
 import lzma
@@ -33,7 +34,7 @@ WINBINS_DIR = Path.home() / "winbins"
 META_FILE = ".selflistload_state.json"
 OUT_DNS_FILE = "dns/biggest_dnslist.txt"
 OUT_WEB_FILE = "web/biggest_weblist.txt"
-USER_AGENT = "selflistload/0.4.0"
+USER_AGENT = "selflistload/0.4.1"
 HTTP_TIMEOUT = 30
 HTTP_RETRIES = 3
 RETRY_DELAY_SEC = 2
@@ -61,6 +62,7 @@ class DownloadTarget:
     is_dns_source: bool = False
     assetnote_prefix: str | None = None
     is_web_source: bool = False
+    is_resolver: bool = False
 
 
 TARGETS: tuple[DownloadTarget, ...] = (
@@ -114,6 +116,16 @@ TARGETS: tuple[DownloadTarget, ...] = (
         "web/dodgypass.txt",
         "https://raw.githubusercontent.com/mohemiv/dodgypass/refs/heads/main/dodgypass.txt",
         is_web_source=True,
+    ),
+    DownloadTarget(
+        "dns/resolvers.txt",
+        "https://raw.githubusercontent.com/trickest/resolvers/main/resolvers.txt",
+        is_resolver=True,
+    ),
+    DownloadTarget(
+        "dns/resolvers-trusted.txt",
+        "https://raw.githubusercontent.com/trickest/resolvers/main/resolvers-trusted.txt",
+        is_resolver=True,
     ),
     DownloadTarget(
         "dns/best-dns-wordlist.txt",
@@ -1052,6 +1064,13 @@ def validate_wordlist(
         raise SelfListLoadError(f"Вместо текстового словаря {target.name} получены бинарные данные")
     if not _has_wordlist_entries(path, compressed=compressed):
         raise SelfListLoadError(f"Словарь {target.name} содержит только пустые строки или комментарии")
+    if target.is_resolver:
+        with opener(path, "rb") as stream:
+            for number, raw in enumerate(stream, 1):
+                try:
+                    ipaddress.ip_address(raw.strip().decode("ascii"))
+                except (ValueError, UnicodeDecodeError) as exc:
+                    raise SelfListLoadError(f"Invalid resolver IP in {target.name} at line {number}") from exc
 
 
 def count_file_lines(path: Path) -> int:

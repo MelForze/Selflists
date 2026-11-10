@@ -83,6 +83,8 @@ Wordlists and main utilities after `selflistload download`:
 │   │   ├── custom-alnum-5.txt
 │   │   ├── n0kovo_subdomains.txt
 │   │   ├── namelist.txt
+│   │   ├── resolvers-trusted.txt
+│   │   ├── resolvers.txt
 │   │   └── trickest-inventory-subdomains.txt
 │   ├── web/
 │   │   ├── assetnote-directories.txt
@@ -122,6 +124,11 @@ entries in total. These lists are generated locally and included in the combined
 `web/biggest_weblist.txt` combines six path and directory wordlists with duplicates removed.
 
 `web/params.txt` contains HTTP parameter names; `web/headers.txt` contains header names.
+
+`dns/resolvers.txt` and `dns/resolvers-trusted.txt` come from
+[Trickest](https://github.com/trickest/resolvers) and are refreshed by `update`.
+Use them with puredns via `--resolvers` and `--resolvers-trusted`, respectively.
+They are excluded from `biggest_dnslist.txt`.
 
 The complete OpenSSH and PowerShell bundles, including dependencies, are installed
 in `winbins/ssh/` and `winbins/pwsh/`, respectively.
